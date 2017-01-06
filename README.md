@@ -14,12 +14,12 @@ For normally distributed parameters I assume that the variance is fixed (just li
 Same thing is here - the result is equevalent to minimizing negative log-likelihood.
 
 ### Random sample
-![random_sample](images/random_sample.png "Random sample")
+![random_sample](images/random-sample.png "Random sample")
 
 ### Symbol incline
-Changing c1 from -2 to 2 in each column and activating different categorical parameter per row:
-![symbol_incline](images/symbol_incline.png "Symbol incline")
+Changing c1 from -2 to 2 in each column and activating different categorical parameter per row:  
+![symbol_incline](images/symbol-incline.png "Symbol incline")
 
 ### Stroke width
-Changing c2 from -2 to 2:
-![stroke_width](images/stroke_width.png "Stroke width")
+Changing c2 from -2 to 2:  
+![stroke_width](images/stroke-width.png "Stroke width")
