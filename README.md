@@ -16,10 +16,10 @@ Same thing is here - the result is equevalent to minimizing negative log-likelih
 ### Random sample
 ![random_sample](images/random-sample.png "Random sample")
 
-### Symbol incline
+### Symbol rotation
 Changing c1 from -2 to 2 in each column and activating different categorical parameter per row:  
 ![symbol_incline](images/symbol-incline.png "Symbol incline")
 
-### Stroke width
+### Symbol width
 Changing c2 from -2 to 2:  
 ![stroke_width](images/stroke-width.png "Stroke width")
