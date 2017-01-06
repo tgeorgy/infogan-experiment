@@ -54,22 +54,22 @@ local netD = nn.Sequential()
 
 local netD_input = nn.Identity()()
 netD:add(nn.SpatialConvolution(1, 64, 4, 4, 2, 2, 1, 1))
-netD:add(nn.LeakyReLU(0.2, true))
+netD:add(nn.LeakyReLU(0.01, true))
 
 netD:add(nn.SpatialConvolution(64, 128, 4, 4, 2, 2, 1, 1))
 netD:add(nn.SpatialBatchNormalization(128))
-netD:add(nn.LeakyReLU(0.2, true))
+netD:add(nn.LeakyReLU(0.01, true))
 
 netD:add(nn.Reshape(128 * 8 * 8))
 netD:add(nn.Linear(128 * 8 * 8, 1024))
 netD:add(nn.BatchNormalization(1024))
-netD:add(nn.LeakyReLU(0.2, true))
+netD:add(nn.LeakyReLU(0.01, true))
 
 netD = netD(netD_input)
 
 local netQ = nn.Linear(1024, 128)(netD)
 netQ = nn.BatchNormalization(128)(netQ)
-netQ = nn.LeakyReLU(0.2, true)(netQ)
+netQ = nn.LeakyReLU(0.01, true)(netQ)
 netQ = nn.Linear(128, opt.cont_param_n + opt.desc_param_n)(netQ)
 
 local netQ_c = nn.Narrow(2, 1, opt.cont_param_n)(netQ)
@@ -177,7 +177,7 @@ local fDx = function(x)
     local df_do_D = criterion_D:backward(output_D, label)
     local df_do_Q_c = criterion_Q_c:backward(output_Q_c, label_Q_c)
     local df_do_Q_d = criterion_Q_d:backward(output_Q_d, latent_label)
-    netD:backward(input, {df_do_D, df_do_Q_c*opt.info_coef, df_do_Q_d*opt.info_coef})
+    netD:backward(input, {df_do_D, df_do_Q_c*opt.info_coef*0.5, df_do_Q_d*opt.info_coef})
 
     errD = (errD_real + errD_fake)/2
     errQ = (errQ_c + errQ_d)/2
@@ -196,14 +196,14 @@ local fGx = function(x)
     local df_do_D = criterion_D:backward(output[1], label)
     local df_do_Q_c = criterion_Q_c.gradInput
     local df_do_Q_d = criterion_Q_d.gradInput
-    local df_dg = netD:updateGradInput({input}, {df_do_D, df_do_Q_c*opt.info_coef, df_do_Q_d*opt.info_coef})
+    local df_dg = netD:updateGradInput({input}, {df_do_D, df_do_Q_c*opt.info_coef*0.5, df_do_Q_d*opt.info_coef})
 
     netG:backward(noise, df_dg)
     return errG, gradParametersG
 end
 ----------------------------------------------------------------------------
 local optimStateD = {
-   learningRate = 0.0002,
+   learningRate = 0.001,
    beta1 = 0.5,
 }
 local optimStateG = {
@@ -218,7 +218,7 @@ end
 netG:training()
 netD:training()
 
-local nepochs = 20
+local nepochs = 30
 local print_every = 50
 
 for epochi = 1,nepochs do
